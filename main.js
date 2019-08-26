@@ -11,47 +11,52 @@ const debug = require( "debug" )( "glyphhanger:cli" );
 
 const parsePath = require("parse-filepath");
 
-var whitelist = new GlyphHangerWhitelist( argv.w || argv.whitelist, {
-	US_ASCII: argv.US_ASCII,
-	LATIN: argv.LATIN
-});
+// var whitelist = new GlyphHangerWhitelist( argv.w || argv.whitelist, {
+// 	US_ASCII: argv.US_ASCII,
+// 	LATIN: argv.LATIN
+// });
 
-var gh = new GlyphHanger();
-gh.setUnicodesOutput( argv.string );
-gh.setWhitelist( whitelist );
-gh.setSubset( argv.subset );
-gh.setJson( argv.json );
-gh.setClassName( argv.classname );
-gh.setFamilies( argv.family );
-gh.setTimeout( argv.timeout );
-gh.setVisibilityCheck( argv.onlyVisible );
-gh.setCSSSelector( argv.cssSelector );
-if( argv.jsdom ) {
-	gh.setEnvironmentJSDOM();
-}
+// var gh = new GlyphHanger();
+// gh.setUnicodesOutput( argv.string );
+// gh.setWhitelist( whitelist );
+// gh.setSubset( argv.subset );
+// gh.setJson( argv.json );
+// gh.setClassName( argv.classname );
+// gh.setFamilies( argv.family );
+// gh.setTimeout( argv.timeout );
+// gh.setVisibilityCheck( argv.onlyVisible );
+// gh.setCSSSelector( argv.cssSelector );
+// if( argv.jsdom ) {
+// 	gh.setEnvironmentJSDOM();
+// }
 
-var subset = new GlyphHangerSubset();
-subset.setOutputDirectory(argv.output);
+// var subset = new GlyphHangerSubset();
+// subset.setOutputDirectory(argv.output);
 
-if( argv.formats ) {
-	subset.setFormats( argv.formats );
-}
-if( argv.subset ) {
-	subset.setFontFilesGlob( argv.subset );
-}
+// if( argv.formats ) {
+// 	subset.setFormats( argv.formats );
+// }
+// if( argv.subset ) {
+// 	subset.setFontFilesGlob( argv.subset );
+// }
 
-var fontface = new GlyphHangerFontFace();
-fontface.setFamilies( argv.family );
-fontface.setCSSOutput( argv.css );
+// var fontface = new GlyphHangerFontFace();
+// fontface.setFamilies( argv.family );
+// fontface.setCSSOutput( argv.css );
 
-if( argv.subset ) {
-	fontface.setSubset( subset );
-}
+// if( argv.subset ) {
+// 	fontface.setSubset( subset );
+// }
 
 
 // Unknown: gotta specify what the file is somehow ??
-export const subset = (chars, fontToSubset) => {
-    gh.setStandardInput(chars);
+const subsetFunc = (chars, fontToSubset) => {
+    var gh = new GlyphHanger();
+    const whitelist = new GlyphHangerWhitelist(chars, {
+        US_ASCII: argv.US_ASCII,
+        LATIN: argv.LATIN
+    });
+    gh.setWhitelist(whitelist);
 
     gh.output(); // idk what this does
 
@@ -59,12 +64,12 @@ export const subset = (chars, fontToSubset) => {
     gh.setSubset(fontToSubset);
 
     // Set the formats (just ttf for now)
-    gh.setFormats('ttf');
+    // gh.setFormats('ttf');
 
     try {
         subset.subsetAll(whitelist.getUniversalRangeAsUnicodes());
     } catch (e) {
-        console.log('very bad');
+        console.log(e);
     }
 
     try {
@@ -74,3 +79,5 @@ export const subset = (chars, fontToSubset) => {
         console.log('it didnt work')
     }
 }
+
+subsetFunc('yeeeeee', 'hey.ttf')
