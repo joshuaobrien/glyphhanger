@@ -63,8 +63,10 @@ const subsetFunc = (chars, fontToSubset) => {
     // Load up the file in question
     gh.setSubset(fontToSubset);
 
-    // Set the formats (just ttf for now)
-    // gh.setFormats('ttf');
+
+    const subset = new GlyphHangerSubset();
+    subset.setOutputDirectory('.');
+    subset.setFormats('ttf');
 
     try {
         subset.subsetAll(whitelist.getUniversalRangeAsUnicodes());
