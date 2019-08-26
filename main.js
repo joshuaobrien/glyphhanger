@@ -11,75 +11,47 @@ const debug = require( "debug" )( "glyphhanger:cli" );
 
 const parsePath = require("parse-filepath");
 
-// var whitelist = new GlyphHangerWhitelist( argv.w || argv.whitelist, {
-// 	US_ASCII: argv.US_ASCII,
-// 	LATIN: argv.LATIN
-// });
-
-// var gh = new GlyphHanger();
-// gh.setUnicodesOutput( argv.string );
-// gh.setWhitelist( whitelist );
-// gh.setSubset( argv.subset );
-// gh.setJson( argv.json );
-// gh.setClassName( argv.classname );
-// gh.setFamilies( argv.family );
-// gh.setTimeout( argv.timeout );
-// gh.setVisibilityCheck( argv.onlyVisible );
-// gh.setCSSSelector( argv.cssSelector );
-// if( argv.jsdom ) {
-// 	gh.setEnvironmentJSDOM();
-// }
-
-// var subset = new GlyphHangerSubset();
-// subset.setOutputDirectory(argv.output);
-
-// if( argv.formats ) {
-// 	subset.setFormats( argv.formats );
-// }
-// if( argv.subset ) {
-// 	subset.setFontFilesGlob( argv.subset );
-// }
-
-// var fontface = new GlyphHangerFontFace();
-// fontface.setFamilies( argv.family );
-// fontface.setCSSOutput( argv.css );
-
-// if( argv.subset ) {
-// 	fontface.setSubset( subset );
-// }
-
-
 // Unknown: gotta specify what the file is somehow ??
 const subsetFunc = (chars, fontToSubset) => {
+    const extension = 'ttf';
+    const fontPathWithExtension = `fonts/${fontToSubset}.${extension}`;
+
     var gh = new GlyphHanger();
-    const whitelist = new GlyphHangerWhitelist(chars, {
-        US_ASCII: argv.US_ASCII,
-        LATIN: argv.LATIN
-    });
+    const whitelist = new GlyphHangerWhitelist(chars);
     gh.setWhitelist(whitelist);
-
-    gh.output(); // idk what this does
-
-    // Load up the file in question
-    gh.setSubset(fontToSubset);
-
+    gh.setSubset(fontPathWithExtension);
 
     const subset = new GlyphHangerSubset();
-    subset.setOutputDirectory('.');
+    subset.setOutputDirectory('./fonts/subsetted');
     subset.setFormats('ttf');
+    subset.setFontFilesGlob(fontPathWithExtension);
+    
+    gh.output();
 
     try {
-        subset.subsetAll(whitelist.getUniversalRangeAsUnicodes());
+        subset.subsetAll(whitelist.getWhitelistAsUnicodes());
     } catch (e) {
-        console.log(e);
+        return {
+            success: false,
+            message: e,
+        }
     }
 
+    const fontface = new GlyphHangerFontFace();
     try {
         fontface.writeCSSFiles();
         fontface.output();
     } catch (e) {
-        console.log('it didnt work')
+        return {
+            success: false,
+            message: e,
+        }
+    }
+
+    return {
+        success: true,
+        message: `/fonts/subsetted/${fontToSubset}_subsetted.${extension}`,
     }
 }
 
-subsetFunc('yeeeeee', 'hey.ttf')
+// console.log(subsetFunc('ye3t', 'hey'));
