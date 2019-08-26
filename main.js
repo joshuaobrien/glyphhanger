@@ -50,7 +50,7 @@ if( argv.subset ) {
 
 
 // Unknown: gotta specify what the file is somehow ??
-export const subset = (chars, fontToSubset, format) => {
+export const subset = (chars, fontToSubset) => {
     gh.setStandardInput(chars);
 
     gh.output(); // idk what this does
@@ -58,8 +58,8 @@ export const subset = (chars, fontToSubset, format) => {
     // Load up the file in question
     gh.setSubset(fontToSubset);
 
-    // Set the formats
-    gh.setFormats(format);
+    // Set the formats (just ttf for now)
+    gh.setFormats('ttf');
 
     try {
         subset.subsetAll(whitelist.getUniversalRangeAsUnicodes());
