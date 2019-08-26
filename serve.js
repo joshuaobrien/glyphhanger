@@ -6,13 +6,6 @@ const port = 1989;
 
 app.use(cors());
 
-// TODO: call something main.js
-const getSubsettedFont = (whitelist, id) => {
-  return {
-    location: 'www.google.com',
-  };
-};
-
 app.get('/subset', (req, res) => {
   const id = req.query.id;
   const whitelist = req.query.whitelist;
@@ -24,5 +17,7 @@ app.get('/subset', (req, res) => {
 
   res.send(font);
 });
+
+app.use('/fonts', express.static('fonts'));
 
 app.listen(port, () => console.log(`Font subsetter listening on port ${port}`));
