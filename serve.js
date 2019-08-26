@@ -1,12 +1,13 @@
 const express = require('express');
 const cors = require('cors');
+const subsetFunc = require('./main')
 const app = express();
 const port = 1989;
 
 app.use(cors());
 
 // TODO: call something main.js
-const getSubsettedFont = (id, whitelist) => {
+const getSubsettedFont = (whitelist, id) => {
   return {
     location: 'www.google.com',
   };
@@ -19,7 +20,7 @@ app.get('/subset', (req, res) => {
     res.status(403).end();
   }
 
-  const font = getSubsettedFont(id, whitelist);
+  const font = subsetFunc(whitelist, id);
 
   res.send(font);
 });

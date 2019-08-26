@@ -23,7 +23,7 @@ const subsetFunc = (chars, fontToSubset) => {
 
     const subset = new GlyphHangerSubset();
     subset.setOutputDirectory('./fonts/subsetted');
-    subset.setFormats('ttf');
+    subset.setFormats(extension);
     subset.setFontFilesGlob(fontPathWithExtension);
     
     gh.output();
@@ -50,8 +50,10 @@ const subsetFunc = (chars, fontToSubset) => {
 
     return {
         success: true,
-        message: `/fonts/subsetted/${fontToSubset}_subsetted.${extension}`,
+        message: `/fonts/subsetted/${fontToSubset}-subset.${extension}`,
     }
 }
+
+module.exports = subsetFunc;
 
 // console.log(subsetFunc('ye3t', 'hey'));
